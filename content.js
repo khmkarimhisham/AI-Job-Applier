@@ -76,11 +76,20 @@ function scrapeFormFields() {
     const uniqueId = input.id || `ai_job_applier_field_${index}`;
     if (!input.id) input.id = uniqueId;
 
-    fields.push({
+    const fieldData = {
       id: uniqueId,
       label: findLabelFor(input),
       type: input.tagName.toLowerCase() === 'input' ? input.type : input.tagName.toLowerCase()
-    });
+    };
+
+    if (fieldData.type === 'select') {
+      fieldData.options = Array.from(input.options).map(opt => ({
+        text: opt.text.trim(),
+        value: opt.value.trim()
+      })).filter(opt => opt.value);
+    }
+
+    fields.push(fieldData);
   });
 
   return fields;

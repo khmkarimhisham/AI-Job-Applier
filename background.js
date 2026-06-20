@@ -25,6 +25,7 @@ RULES:
 5. If the answer is NOT explicitly stated in the context, you MUST set the value to the exact string "UNKNOWN". Do NOT guess, assume, or hallucinate.
 6. Do NOT copy-paste large paragraphs unless the field specifically asks for a "Summary" or "Cover Letter".
 7. Be extremely concise.
+8. If a field has an "options" array, your answer MUST exactly match the "value" property of one of the options. Choose the option whose "text" is the best fit.
     `;
 
     fetch(`${ollamaUrl.replace(/\/$/, '')}/api/chat`, {
