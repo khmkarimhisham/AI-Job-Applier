@@ -1,9 +1,24 @@
-if (typeof window.aiJobApplierLoaded === 'undefined') {
+(function() {
+  if (window.aiJobApplierLoaded) return;
   window.aiJobApplierLoaded = true;
 
   console.log("AI Job Applier content script loaded");
 
-let scrapedFieldsData = [];
+  let scrapedFieldsData = [];
+
+  function setNativeValue(element, value) {
+    const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')?.set;
+    const prototype = Object.getPrototypeOf(element);
+    const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;
+
+    if (prototypeValueSetter && valueSetter !== prototypeValueSetter) {
+      prototypeValueSetter.call(element, value);
+    } else if (valueSetter) {
+      valueSetter.call(element, value);
+    } else {
+      element.value = value;
+    }
+  }
 
 function findLabelFor(input) {
   // 1. Check aria-labelledby
@@ -128,9 +143,8 @@ function fillForm(filledData) {
       el.style.border = '2px solid orange';
       el.dataset.aiStatus = 'unknown';
     } else {
-      el.value = value;
+      setNativeValue(el, value);
       el.style.border = '2px solid #10b981'; // Green to show AI filled it
-      // Dispatch events to trigger any framework (React/Angular) state updates
       el.dispatchEvent(new Event('input', { bubbles: true }));
       el.dispatchEvent(new Event('change', { bubbles: true }));
     }
@@ -256,5 +270,4 @@ document.addEventListener('submit', (e) => {
   });
 });
 
-// Listener replaces floating button
-} // End of injection guard
+})();
