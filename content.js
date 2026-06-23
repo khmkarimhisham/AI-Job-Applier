@@ -79,7 +79,7 @@ function findLabelFor(input) {
 }
 
 function scrapeFormFields() {
-  const inputs = document.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea, select');
+  const inputs = document.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea, select');
   const fields = [];
   
   inputs.forEach((input, index) => {
@@ -138,6 +138,7 @@ function fillForm(filledData) {
   for (const [id, value] of Object.entries(filledData)) {
     const el = document.getElementById(id);
     if (!el) continue;
+    if (el.type === 'file') continue; // Prevent setting value on file inputs
 
     if (value === 'UNKNOWN') {
       el.style.border = '2px solid orange';
